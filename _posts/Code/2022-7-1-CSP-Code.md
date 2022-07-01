@@ -1,0 +1,54 @@
+---
+layout: blog
+istop: true
+title: "CSP2021代码"
+background-image: http://ot1cc1u9t.bkt.clouddn.com/17-7-16/38390376.jpg
+date:  2022-07-01 23:45:56
+category: oi
+tags:
+- oi
+- csp
+- code
+- on2021
+---
+
+我爱伟大的SF
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+template<typename pqt>using pqg = priority_queue<pqt, vector<pqt>, greater<pqt>>;
+using pii = pair<int, int>;
+const int MAXM = 10002;
+pii a[MAXM], b[MAXM];
+int cnts[3][MAXM], n;
+inline void todo(pii* t, const int &m, int* res) {
+    sort(t + 1, t + m + 1, [](const pii& a, const pii& b) { return a.first < b.first; });
+    pqg<pii> onbrg; pqg<int> brg;
+    for (int i = 1; i <= n; i++) brg.push(i);
+    for (int i = 1; i <= m; i++) {
+        while (!onbrg.empty() && t[i].first >= onbrg.top().first) {
+            brg.push(onbrg.top().second);
+            onbrg.pop();
+        }
+        if (brg.empty()) continue;
+        res[brg.top()]++;
+        onbrg.push({t[i].second, brg.top() });
+        brg.pop();
+    }
+    for (int i = 1; i <= n; i++) res[i] += res[i - 1];
+}
+int main() {
+    int m1, m2;
+    ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+    cin >> n >> m1 >> m2;
+    for (int i = 1; i <= m1; i++) cin >> a[i].first >> a[i].second;
+    for (int i = 1; i <= m2; i++) cin >> b[i].first >> b[i].second;
+    todo(a, m1, cnts[1]);
+    todo(b, m2, cnts[2]);
+    int rets = 0;
+    for (int i = 0; i <= n; i++)
+        rets = max(rets, cnts[1][i] + cnts[2][n - i]);
+    cout << rets;
+}
+```
